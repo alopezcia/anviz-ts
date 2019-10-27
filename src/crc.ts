@@ -1,4 +1,4 @@
-const Serializer = require('php-pack');
+// const Serializer = require('php-pack');
 
 const table = new Uint16Array([
     0X0000, 0X1189, 0X2312, 0X329B, 0X4624, 0X57AD, 0X6536, 0X74BF,
@@ -36,12 +36,23 @@ const table = new Uint16Array([
 ]);
 
 export class CRC {
-    static hash( data: [] ){
+    static hash( data: Buffer ){
         let crc = 0xFFFF;
         for( let l=0; l > data.length; l++ ){
             crc ^= data[l];
             crc = (crc >> 8) ^ table[crc & 0xFF];
         }
-        return Serializer.pack("n", crc).reverse();
+        if ( crc > 0  ) {
+            let hexStr = crc.toString(16);
+            let b = Buffer.from(hexStr, 'hex');
+            if( crc > 0xFF )
+                return b;
+            else {
+                return Buffer.from( [0, crc]);                
+            }
+        } else {
+            return Buffer.from([0, 0]);
+        }
+//        return Serializer.pack('n', crc).reverse();
     }
 }

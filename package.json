@@ -9,10 +9,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^12.11.1"
+    "@types/node": "^12.11.1",
+    "@types/yargs": "^13.0.3"
   },
   "dependencies": {
-    "php-pack": "^1.0.2-release",
-    "rxjs": "^6.5.3"
+    "rxjs": "^6.5.3",
+    "yargs": "^14.2.0"
   }
 }

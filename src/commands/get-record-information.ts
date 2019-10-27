@@ -1,10 +1,14 @@
-import { ICommand } from '../icommand';
+import { ICommand, IParams, IResponse } from '../icommand';
 
 export class GetRecordInformation implements ICommand {
-    request(): Uint8Array {
+    public getCmd(): number {
+        return 0x3C;
+    }
+    public parseRequest(parms: IParams): Uint8Array {
         throw new Error("Method not implemented.");
     }    
-    response(msg: Uint8Array): void {
+
+    public parseResponse(msg: Uint8Array): IResponse {
         throw new Error("Method not implemented.");
     }
 }

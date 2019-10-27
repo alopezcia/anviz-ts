@@ -1,4 +1,11 @@
+export interface IParams {
+}
+
+export interface IResponse {
+}
+
 export interface ICommand {
-    request(): Uint8Array;
-    response(msg: Uint8Array): void;
+    getCmd(): number;
+    parseRequest( parms: IParams ): Uint8Array;
+    parseResponse( msg: Uint8Array ): IResponse;
 }
