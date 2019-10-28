@@ -11,6 +11,16 @@ export class GetInformation1 implements ICommand {
     }    
 
     public parseResponse(msg: Uint8Array): IResponse {
-        throw new Error("Method not implemented.");
+        const firmwareVersion = msg.slice(0,7).toString();
+        const passlength = msg[8] >> 4;
+        const communicationPass = msg.slice(9,10).toString();
+        const sleepTime  = msg[11];
+        const volume = msg[12];
+        const language = msg[13];
+        const dateTimeFormat = msg[14];
+        const attendanceState = msg[15];
+        const languageSettingFlag = msg[16];
+        const commandVersion = msg[17];
+        return { firmwareVersion, passlength, communicationPass, sleepTime, volume, language, dateTimeFormat, attendanceState, languageSettingFlag, commandVersion };
     }
 }
