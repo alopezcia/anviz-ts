@@ -10,7 +10,7 @@ export class GetInformation1 implements ICommand {
         return new Uint8Array();
     }    
 
-    public parseResponse(msg: Uint8Array): IResponse {
+    public parseResponse(msg: any): IResponse {
         const firmwareVersion = msg.slice(0,7).toString();
         const passlength = msg[8] >> 4;
         const communicationPass = msg.slice(9,10).toString();

@@ -40,16 +40,6 @@ export class CRC {
             let tmp = crc ^ data[l];
             crc = (crc >> 8) ^ table[tmp & 0xFF];
         }
-        if ( crc > 0  ) {
-            let hexStr = crc.toString(16);
-            let b = Buffer.from(hexStr, 'hex');
-            if( crc > 0xFF )
-                return Buffer.from([b[1], b[0]]);
-            else {
-                return Buffer.from( [crc, 0]);                
-            }
-        } else {
-            return Buffer.from([0, 0]);
-        }
+        return crc;
     }
 }

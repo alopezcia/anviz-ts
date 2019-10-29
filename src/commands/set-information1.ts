@@ -32,7 +32,7 @@ export class SetInformation1 implements ICommand {
         }
     }    
 
-    public parseResponse(msg: Uint8Array): IResponse {
+    public parseResponse(msg: any): IResponse {
         throw new Error("Method not implemented.");
     }
 }

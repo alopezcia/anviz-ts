@@ -8,36 +8,24 @@ import { CRC } from './crc';
 
 export class AnvizStream {
 
-    private socket: PromiseSocket<net.Socket>;
     private host: string;
     private port: number;
     private id: number;
-    private icmd: any;
-//    private connected: boolean;
 
-    public constructor( host: string, port: number, id: number, cmd: string  )
+    public constructor( host: string, port: number, id: number  )
     {
-//        this.connected = false;
         this.host=host;
         this.port=port;
         this.id = id;
-        this.icmd = Command.inventory().get(cmd);
-        if( !this.icmd ){
-            throw new Error(`Not exists the command ${cmd}`);
-        }
-        this.socket = new PromiseSocket();
     }
 
-    private buildRequest( parms: any ): Buffer{
+    private buildRequest( icmd: ICommand, parms: any ): Buffer{
         let arrayCH_CMD_LEN = new Uint8Array(8);
         arrayCH_CMD_LEN[0]=0xA5;
         
         let hexStr = this.id.toString(16);
-//        console.log( 'hexStr: ', '0x'+hexStr);
         let b = Buffer.from(hexStr, 'hex');
-//        console.log('Buffer', b );
         let u = Uint8Array.from(b);
-//        console.log('u', u);
         
         if( this.id < 0x100 ){
             arrayCH_CMD_LEN[1]=0;
@@ -65,10 +53,11 @@ export class AnvizStream {
             }
         }
 
-        arrayCH_CMD_LEN[5]=this.icmd.getCmd();
+        arrayCH_CMD_LEN[5]=icmd.getCmd();
         
         // Now parser parameters and get parms length
-        let dta: Uint8Array = this.icmd.parseRequest( parms );
+        let dta: Uint8Array = icmd.parseRequest( parms );
+        console.log(dta);
         const dtaLen = dta.length;
         if (  dtaLen > 0 ){
             hexStr = dtaLen.toString(16);
@@ -89,25 +78,33 @@ export class AnvizStream {
         let buff = Buffer.concat([arrayCH_CMD_LEN, dta] );
 //        console.log(buff);
         let crc16 = CRC.hash(buff);
-//        console.log(crc16);
-        buff = Buffer.concat([buff, crc16]);
-//        console.log(buff);
+        let ucrc = new Uint8Array(2);
+        ucrc[0] = crc16 % 256;
+        ucrc[1] = (crc16 >> 8) % 256;
+        console.log(ucrc);
+        buff = Buffer.concat([buff, ucrc]);
+        console.log(buff);
         return buff;        
     }
 
-    async send( parms: any ){
+    async send( cmd: string, parms: any ){
+        let icmd = Command.inventory().get(cmd);
+        if( !icmd ){
+            throw new Error(`Not exists the command ${cmd}`);
+        }
         // buildRequest
-        const buffer = this.buildRequest(parms); 
+        const buffer = this.buildRequest(icmd, parms); 
         // console.log(buffer);
 
-        await this.socket.connect({port: this.port, host: this.host});
+        const socket: PromiseSocket<net.Socket> = new PromiseSocket();
 
-        const num = await this.socket.write( buffer );
+        await socket.connect({port: this.port, host: this.host});
+
+        const num = await socket.write( buffer );
         // console.log(num);
 
-        const resp: any = await this.socket.read();
+        const resp: any = await socket.read();
 
-        await this.socket.end();
 
         // Process common response data STX-CH-ACK-RET-LEN
         console.log(resp);
@@ -117,9 +114,27 @@ export class AnvizStream {
         const RET = resp[6];
         const LEN = resp.readUInt16BE(7, 8);
         const DATA = resp.slice( 9, 9+LEN);
+        const CRC1 = resp[9+LEN];
+        const CRC2 = resp[10+LEN];
+
+        await socket.end();
+
         if (STX === 0xa5 ) {
-            console.log(`STX: ${STX}, CH: ${CH}, ACK: ${ACK}, RET: ${RET}, LEN ${LEN}`);
-            const r = this.icmd.parseResponse(DATA);
+            console.log(`STX: ${STX}, CH: ${CH}, ACK: ${ACK}, RET: ${RET}, LEN ${LEN}, CRC1 ${CRC1}, CRC2 ${CRC2}`);
+            let computeCRC = (CRC2<<8) + CRC1;
+            let crc16 = CRC.hash(DATA);
+            let ucrc = new Uint8Array(2);
+            ucrc[0] = crc16 % 256;
+            ucrc[1] = (crc16 >> 8) % 256;
+    
+            console.log('computeCRC', computeCRC);
+            console.log('crc16', crc16);
+            console.log('ucrc[0]', ucrc[0]);
+            console.log('ucrc[1]', ucrc[1]);
+
+
+
+            const r = icmd.parseResponse(DATA);
             console.log(JSON.stringify(r));
             return r;
         } else {

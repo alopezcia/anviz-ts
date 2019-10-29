@@ -20,11 +20,25 @@ const argv = yargs
 const ipAddress = argv.i;
 const port = argv.p;
 const deviceId = argv.d;
-const parms = JSON.stringify(argv.j);
+const parms = JSON.parse(argv.j);
 const command = argv._[0];
-const anviz: AnvizStream = new AnvizStream(ipAddress, port, deviceId, command);
-const s = anviz.send( parms );
-console.log(s);
+const anviz: AnvizStream = new AnvizStream(ipAddress, port, deviceId);
+
+if( command === 'downloadAttendanceRecords' && parms.parameter === 1 ) {
+    // Get count atterndes
+    anviz.send( 'getRecordInformation', {} )
+        .then( (dta: any) => { 
+            const count = dta['allRecordAmount'];
+            anviz.send('downloadAttendanceRecords', { parameter: 1, recordAmount: count } ).then( kkfu => console.log(kkfu)).catch(kkerr => console.error(kkerr));
+
+        })
+        .catch(err=> console.error(err));
+} else {
+    anviz.send( command, parms )
+    .then( dta => console.log(dta))
+    .catch(err=> console.error(err));
+}
+
 
 
 // let icommand: any = Command.inventory().get(command);
