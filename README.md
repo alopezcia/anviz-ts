@@ -1,14 +1,14 @@
 # anviz-ts
-Package to communicate with Anviz devices.
+Project to communicate with Anviz devices.
 
 ## :warning: Work in progress :warning:
 
 This is a work in progress, but it's already functional.
 I based this project in node-anviz.  
 
-### Usage
+### Argv command line sample
 
-Call a supported method:
+Edit in index.ts:
 ```js
 const yargs = require('yargs');
 import { AnvizStream } from './stream';
@@ -37,7 +37,11 @@ anviz.send( command, parms )
         .catch(err=> console.error(err));
 
 ```
+### Buikding typescript and run
+tsc -w && nodemon dist/index 
 
-### Documentation
+
+
+### Sample with arguments
 node index  downloadAttendanceRecords -i 172.17.4.228 -d 21 -j "{""parameter"": 1, ""recordAmount"": 25 }"
 
