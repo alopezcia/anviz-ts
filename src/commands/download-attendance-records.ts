@@ -27,9 +27,9 @@ export class DownloadAttendanceRecords implements ICommand {
         if( msg.length < 14 ) {
             return {};
         }
-        console.log(msg.length);
+// console.log(msg.length);
         const numRecs = msg[0];
-        console.log(numRecs);
+// console.log(numRecs);
         let records=[];
         for( let i=0; i<numRecs; i ++){
              let record = msg.slice( 1+(i*14), 14+(i*14) );

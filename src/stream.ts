@@ -5,6 +5,7 @@ import { Command } from './command';
 import { ICommand } from './icommand';
 import { PromiseSocket } from 'promise-socket';
 import { CRC } from './crc';
+import { Pack } from './pack';
 
 export class AnvizStream {
 
@@ -23,67 +24,30 @@ export class AnvizStream {
         let arrayCH_CMD_LEN = new Uint8Array(8);
         arrayCH_CMD_LEN[0]=0xA5;
         
-        let hexStr = this.id.toString(16);
-        let b = Buffer.from(hexStr, 'hex');
-        let u = Uint8Array.from(b);
-        
-        if( this.id < 0x100 ){
-            arrayCH_CMD_LEN[1]=0;
-            arrayCH_CMD_LEN[2]=0;
-            arrayCH_CMD_LEN[3]=0;
-            arrayCH_CMD_LEN[4]=this.id;
-        } else {
-            if( this.id < 0x10000 ){
-                arrayCH_CMD_LEN[1]=0;
-                arrayCH_CMD_LEN[2]=0;
-                arrayCH_CMD_LEN[3]=u[0];
-                arrayCH_CMD_LEN[4]=u[1];
-            } else {
-                if( this.id < 0x1000000 ){
-                    arrayCH_CMD_LEN[1]=0;
-                    arrayCH_CMD_LEN[2]=u[0];
-                    arrayCH_CMD_LEN[3]=u[1];
-                    arrayCH_CMD_LEN[4]=u[2];
-                } else {
-                    arrayCH_CMD_LEN[1]=u[0];
-                    arrayCH_CMD_LEN[2]=u[1];
-                    arrayCH_CMD_LEN[3]=u[2];
-                    arrayCH_CMD_LEN[4]=u[3];
-                }
-            }
-        }
+        const id = Pack.packInteger( this.id );
+        arrayCH_CMD_LEN[1]=id[0];
+        arrayCH_CMD_LEN[2]=id[1];
+        arrayCH_CMD_LEN[3]=id[2];
+        arrayCH_CMD_LEN[4]=id[3];
 
         arrayCH_CMD_LEN[5]=icmd.getCmd();
         
         // Now parser parameters and get parms length
         let dta: Uint8Array = icmd.parseRequest( parms );
-        console.log(dta);
-        const dtaLen = dta.length;
-        if (  dtaLen > 0 ){
-            hexStr = dtaLen.toString(16);
-            b = Buffer.from(hexStr, 'hex');
-            u = Uint8Array.from(b);
-            if( dtaLen < 0x100 ){
-                arrayCH_CMD_LEN[6]=0;
-                arrayCH_CMD_LEN[7]=dtaLen;
-            } else {
-                arrayCH_CMD_LEN[6]=u[0];
-                arrayCH_CMD_LEN[7]=u[1];
-            }
-        } else {
-            arrayCH_CMD_LEN[6]=0;
-            arrayCH_CMD_LEN[7]=0;
-        
-        }
+// console.log(dta);
+        const len = Pack.packShort(dta.length)
+        arrayCH_CMD_LEN[6]=len[0];
+        arrayCH_CMD_LEN[7]=len[1];
+
         let buff = Buffer.concat([arrayCH_CMD_LEN, dta] );
-//        console.log(buff);
+// console.log(buff);
         let crc16 = CRC.hash(buff);
         let ucrc = new Uint8Array(2);
         ucrc[0] = crc16 % 256;
         ucrc[1] = (crc16 >> 8) % 256;
-        console.log(ucrc);
+//        console.log(ucrc);
         buff = Buffer.concat([buff, ucrc]);
-        console.log(buff);
+//        console.log(buff);
         return buff;        
     }
 
@@ -107,7 +71,7 @@ export class AnvizStream {
 
 
         // Process common response data STX-CH-ACK-RET-LEN
-        console.log(resp);
+// console.log(resp);
         const STX = resp[0];
         const CH  = resp.readUIntBE(1, 4);
         const ACK = resp[5];
@@ -120,22 +84,23 @@ export class AnvizStream {
         await socket.end();
 
         if (STX === 0xa5 ) {
-            console.log(`STX: ${STX}, CH: ${CH}, ACK: ${ACK}, RET: ${RET}, LEN ${LEN}, CRC1 ${CRC1}, CRC2 ${CRC2}`);
-            let computeCRC = (CRC2<<8) + CRC1;
-            let crc16 = CRC.hash(DATA);
-            let ucrc = new Uint8Array(2);
-            ucrc[0] = crc16 % 256;
-            ucrc[1] = (crc16 >> 8) % 256;
+// console.log(`STX: ${STX}, CH: ${CH}, ACK: ${ACK}, RET: ${RET}, LEN ${LEN}, CRC1 ${CRC1}, CRC2 ${CRC2}`);
+
+            // let computeCRC = (CRC2<<8) + CRC1;
+            // let crc16 = CRC.hash(DATA);
+            // let ucrc = new Uint8Array(2);
+            // ucrc[0] = crc16 % 256;
+            // ucrc[1] = (crc16 >> 8) % 256;
     
-            console.log('computeCRC', computeCRC);
-            console.log('crc16', crc16);
-            console.log('ucrc[0]', ucrc[0]);
-            console.log('ucrc[1]', ucrc[1]);
+            // console.log('computeCRC', computeCRC);
+            // console.log('crc16', crc16);
+            // console.log('ucrc[0]', ucrc[0]);
+            // console.log('ucrc[1]', ucrc[1]);
 
 
 
             const r = icmd.parseResponse(DATA);
-            console.log(JSON.stringify(r));
+// console.log(JSON.stringify(r));
             return r;
         } else {
             throw new Error( `Error STX code ${STX}` );

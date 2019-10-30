@@ -1,3 +1,15 @@
+# anviz-ts
+Package to communicate with Anviz devices.
+
+## :warning: Work in progress :warning:
+
+This is a work in progress, but it's already functional.
+I based this project in node-anviz.  
+
+### Usage
+
+Call a supported method:
+```js
 const yargs = require('yargs');
 import { AnvizStream } from './stream';
 
@@ -20,22 +32,12 @@ const deviceId = argv.d;
 let parms = JSON.parse(argv.j);
 const command = argv._[0];
 const anviz: AnvizStream = new AnvizStream(ipAddress, port, deviceId);
-
-if( command === 'downloadAttendanceRecords' && parms.parameter === 1 ) {
-    // Get count atterndes
-    anviz.send( 'getRecordInformation', {} )
-        .then( (dta: any) => { 
-            const count = dta['allRecordAmount'];
-            anviz.send('downloadAttendanceRecords', { parameter: 1, recordAmount: count } ).then( kkfu => console.log(kkfu)).catch(kkerr => console.error(kkerr));
-
-        })
-        .catch(err=> console.error(err));
-} else {
-    if( command === 'uploadRecord'  ) {
-        parms = { userCode: 449, dateTime: new Date() };
-    }
-    anviz.send( command, parms )
+anviz.send( command, parms )
         .then( dta => console.log(dta))
         .catch(err=> console.error(err));
-}
+
+```
+
+### Documentation
+node index  downloadAttendanceRecords -i 172.17.4.228 -d 21 -j "{""parameter"": 1, ""recordAmount"": 25 }"
 
