@@ -26,7 +26,15 @@ export class UploadRecord implements ICommand {
             record[3]=userCode[2];
             record[4]=userCode[3];
 
-            const dd = Math.trunc((parms.dateTime.getTime() - (new Date("2000-01-02 01:00:00").getTime())) / 1000);
+            // Attention with UTC date
+            const diff = parms.dateTime.getHours() - parms.dateTime.getUTCHours();
+            let recordEpoch: Date;
+            if( diff === 1 ){
+                recordEpoch = new Date("2000-01-02 00:00:00");
+            } else {
+                recordEpoch = new Date("2000-01-01 23:00:00");
+            }
+            const dd = Math.trunc((parms.dateTime.getTime() - (recordEpoch.getTime())) / 1000);
             const dateTime = Pack.packInteger( dd );
             record[5]=dateTime[0];
             record[6]=dateTime[1];

@@ -1,6 +1,4 @@
 import * as net from 'net';
-import { fromEvent, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Command } from './command';
 import { ICommand } from './icommand';
 import { PromiseSocket } from 'promise-socket';

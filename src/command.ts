@@ -9,6 +9,7 @@ import { GetTCPIPparms } from './commands/get-tcp-ip-parms';
 import { GetRecordInformation } from './commands/get-record-information';
 import { DownloadAttendanceRecords } from './commands/download-attendance-records';
 import { UploadRecord } from './commands/upload-record';
+import { ClearRecords } from './commands/clear-records';
 
 export class Command {
     public static inventory(): Map<string, ICommand> {
@@ -23,7 +24,7 @@ export class Command {
         Maps.set( 'getRecordInformation', new GetRecordInformation() );
         Maps.set( 'downloadAttendanceRecords', new DownloadAttendanceRecords() );
         Maps.set( 'uploadRecord', new UploadRecord() );
-
+        Maps.set( 'clearRecords', new ClearRecords() );
         return Maps;
     }
 }

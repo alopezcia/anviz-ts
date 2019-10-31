@@ -6,6 +6,10 @@ Project to communicate with Anviz devices.
 This is a work in progress, but it's already functional.
 I based this project in node-anviz.  
 
+### Dilemma Observables vs Promises
+What to implement, Observables or Promises ?. The purpose of this package is to make it work in the backend, so it may be convenient to do so with Promises, at least in this first version. 
+It depends on the NPM promise-socket package so it is necessary to do an npm install
+
 ### Argv command line sample
 
 Edit in index.ts:
@@ -37,7 +41,7 @@ anviz.send( command, parms )
         .catch(err=> console.error(err));
 
 ```
-### Buikding typescript and run
+### Building typescript and run
 tsc -w && nodemon dist/index 
 
 
