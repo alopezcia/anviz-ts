@@ -1,5 +1,5 @@
 const yargs = require('yargs');
-import { AnvizStream } from './stream';
+import { AnvizStream } from '../src/stream';
 
 const argv = yargs
     .usage('Usage: $0 <command> -i [ipAddress] -p [port] -d [device code] -j [json parameters]')
@@ -38,4 +38,3 @@ if( command === 'downloadAttendanceRecords' && parms.parameter === 1 ) {
         .then( dta => console.log(dta))
         .catch(err=> console.error(err));
 }
-

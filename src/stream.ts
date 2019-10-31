@@ -71,13 +71,13 @@ export class AnvizStream {
         // Process common response data STX-CH-ACK-RET-LEN
 // console.log(resp);
         const STX = resp[0];
-        const CH  = resp.readUIntBE(1, 4);
-        const ACK = resp[5];
-        const RET = resp[6];
+        // const CH  = resp.readUIntBE(1, 4);
+        // const ACK = resp[5];
+        // const RET = resp[6];
         const LEN = resp.readUInt16BE(7, 8);
         const DATA = resp.slice( 9, 9+LEN);
-        const CRC1 = resp[9+LEN];
-        const CRC2 = resp[10+LEN];
+        // const CRC1 = resp[9+LEN];
+        // const CRC2 = resp[10+LEN];
 
         await socket.end();
 

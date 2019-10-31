@@ -12,10 +12,10 @@ It depends on the NPM promise-socket package so it is necessary to do an npm ins
 
 ### Argv command line sample
 
-Edit in index.ts:
+Edit in argv-sample.ts:
 ```js
 const yargs = require('yargs');
-import { AnvizStream } from './stream';
+import { AnvizStream } from '../lib/stream';
 
 const argv = yargs
     .usage('Usage: $0 <command> -i [ipAddress] -p [port] -d [device code] -j [json parameters]')
@@ -41,11 +41,10 @@ anviz.send( command, parms )
         .catch(err=> console.error(err));
 
 ```
-### Building typescript and run
-tsc -w && nodemon dist/index 
-
+### Building typescript 
+tsc -w 
 
 
 ### Sample with arguments
-node index  downloadAttendanceRecords -i 172.17.4.228 -d 21 -j "{""parameter"": 1, ""recordAmount"": 25 }"
+node argv-sample  downloadAttendanceRecords -i 172.17.4.228 -d 21 -j "{""parameter"": 1, ""recordAmount"": 25 }"
 
