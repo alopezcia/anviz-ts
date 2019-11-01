@@ -1,23 +1,24 @@
 {
-  "name": "anviz-ts",
-  "version": "1.0.0",
-  "description": "TypeScript Anviz's TC_B Comunnication Protocol V2.1",
-  "main": "lib/stream.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^12.11.1",
-    "@types/yargs": "^13.0.3"
-  },
-  "dependencies": {
-    "promise-socket": "^6.0.2",
-    "yargs": "^14.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alopezcia/anviz-ts.git"
-  }
+    "name": "anviz-ts",
+    "version": "1.0.0",
+    "description": "TypeScript Anviz's TC_B Comunnication Protocol V2.1",
+    "main": "lib/stream.js",
+    "types": "lib/stream.d.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Adolfo Lopez",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^12.11.1",
+        "@types/yargs": "^13.0.3"
+    },
+    "dependencies": {
+        "promise-socket": "^6.0.2",
+        "yargs": "^14.2.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alopezcia/anviz-ts.git"
+    }
 }
