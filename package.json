@@ -1,6 +1,6 @@
 {
     "name": "anviz-ts",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "TypeScript Anviz's TC_B Comunnication Protocol V2.1",
     "main": "lib/stream.js",
     "types": "lib/stream.d.ts",
