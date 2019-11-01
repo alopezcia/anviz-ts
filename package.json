@@ -2,8 +2,8 @@
     "name": "anviz-ts",
     "version": "1.0.1",
     "description": "TypeScript Anviz's TC_B Comunnication Protocol V2.1",
-    "main": "lib/stream.js",
-    "types": "lib/stream.d.ts",
+    "main": "./lib/stream.js",
+    "types": "./lib/stream.d.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
