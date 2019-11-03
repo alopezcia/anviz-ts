@@ -4,6 +4,7 @@ import { ICommand } from './icommand';
 import { PromiseSocket } from 'promise-socket';
 import { CRC } from './crc';
 import { Pack } from './pack';
+import { ACK } from './ack';
 
 export class AnvizStream {
 
@@ -72,8 +73,8 @@ export class AnvizStream {
 // console.log(resp);
         const STX = resp[0];
         // const CH  = resp.readUIntBE(1, 4);
-        // const ACK = resp[5];
-        // const RET = resp[6];
+        const ACKR = resp[5];
+        const RET = resp[6];
         const LEN = resp.readUInt16BE(7, 8);
         const DATA = resp.slice( 9, 9+LEN);
         // const CRC1 = resp[9+LEN];
@@ -82,8 +83,30 @@ export class AnvizStream {
         await socket.end();
 
         if (STX === 0xa5 ) {
+            if( icmd.getCmd() + 0x80 === ACKR )
+                console.log('passing check');
 // console.log(`STX: ${STX}, CH: ${CH}, ACK: ${ACK}, RET: ${RET}, LEN ${LEN}, CRC1 ${CRC1}, CRC2 ${CRC2}`);
-
+            switch( RET )
+            {
+                case ACK.SUCCESS:
+                    const r = icmd.parseResponse(DATA);
+                    // console.log(JSON.stringify(r));
+                    return r;
+                case ACK.FAIL:
+                    throw new Error('operation failed');
+                case ACK.FULL:
+                    throw new Error('user full');
+                case ACK.EMPTY:
+                    throw new Error('user empty');
+                case ACK.NO_USER:
+                    throw new Error('user doesn\'t exists');
+                case ACK.TIME_OUT:
+                    throw new Error('timeout');
+                case ACK.USER_OCCUPIED:
+                    throw new Error('user already exists');
+                case ACK.FINGER_OCCUPIED:
+                    throw new Error('fingerprint already exists');
+            }
             // let computeCRC = (CRC2<<8) + CRC1;
             // let crc16 = CRC.hash(DATA);
             // let ucrc = new Uint8Array(2);
@@ -97,9 +120,6 @@ export class AnvizStream {
 
 
 
-            const r = icmd.parseResponse(DATA);
-// console.log(JSON.stringify(r));
-            return r;
         } else {
             throw new Error( `Error STX code ${STX}` );
         }

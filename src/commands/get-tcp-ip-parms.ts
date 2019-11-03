@@ -18,8 +18,8 @@ export class GetTCPIPparms implements ICommand {
         const serverIPAddress = msg[18].toString() + '.' +  msg[19].toString() + '.' + msg[20].toString() + '.' + msg[21].toString();
         const farLimit = msg[22];
         const commPort = msg.readUInt16BE(23, 24);
-        const tcpMide = msg[25];
+        const tcpMode = msg[25];
         const dhcpLimit = msg[26];
-        return { ipAddress, subnetMask, macAddress, defaultGateway, serverIPAddress, farLimit, commPort, tcpMide, dhcpLimit };
+        return { ipAddress, subnetMask, macAddress, defaultGateway, serverIPAddress, farLimit, commPort, tcpMode, dhcpLimit };
     }
 }
