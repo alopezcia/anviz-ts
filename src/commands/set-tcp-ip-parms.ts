@@ -72,7 +72,7 @@ export class SetDateTime implements ICommand {
             retval[26]=parms.dhcpLimit;
             return retval;
         } else {
-            throw new Error("parameters erroneous.  { year, month, day, hour, minute, second }");
+            throw new Error("parameters erroneous.  { ipAddress, subnetMask, macAddress, defaultGateway, serverIPAddress, farLimit, commPort, tcpMode, dhcpLimit }");
         }
     }    
 

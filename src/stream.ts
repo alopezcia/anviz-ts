@@ -94,18 +94,25 @@ export class AnvizStream {
                     return r;
                 case ACK.FAIL:
                     throw new Error('operation failed');
+                    return null;
                 case ACK.FULL:
                     throw new Error('user full');
+                    return null;
                 case ACK.EMPTY:
                     throw new Error('user empty');
+                    return null;
                 case ACK.NO_USER:
                     throw new Error('user doesn\'t exists');
+                    return null;
                 case ACK.TIME_OUT:
                     throw new Error('timeout');
+                    return null;
                 case ACK.USER_OCCUPIED:
                     throw new Error('user already exists');
+                    return null;
                 case ACK.FINGER_OCCUPIED:
                     throw new Error('fingerprint already exists');
+                    return null;
             }
             // let computeCRC = (CRC2<<8) + CRC1;
             // let crc16 = CRC.hash(DATA);
@@ -123,6 +130,6 @@ export class AnvizStream {
         } else {
             throw new Error( `Error STX code ${STX}` );
         }
-
+        return null;
     }
 }

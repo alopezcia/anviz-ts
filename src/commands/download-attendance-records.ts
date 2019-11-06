@@ -32,13 +32,13 @@ export class DownloadAttendanceRecords implements ICommand {
 // console.log(numRecs);
         let records=[];
         for( let i=0; i<numRecs; i ++){
-             let record = msg.slice( 1+(i*14), 14+(i*14) );
-             let userCode = record.readUInt32BE(1, 4);
-             let dateU = record.readUInt32BE(5, 8);
-             let date = new Date((new Date("2000-01-02 01:00:00").getTime()) + dateU*1000);
-             let backup = record[9];
-             let recordType = record[10];
-             let workTypes = record.readUInt16BE(11, 13);
+            let record = msg.slice( 1+(i*14), 14+(i*14) );
+            let userCode = record.readUInt32BE(1, 4);
+            let dateU = record.readUInt32BE(5, 8);
+            let date = new Date((new Date("2000-01-02 01:00:00").getTime()) + dateU*1000);
+            let backup = record[9];
+            let recordType = record[10];
+            let workTypes = record.readUInt16BE(11, 13);
             records.push( {userCode, date, backup, recordType, workTypes});
         }
         return records;
